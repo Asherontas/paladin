@@ -18,20 +18,22 @@
       return subsystems[name];
     };
 
-    this.start = function ( name ) {
+    this.start = function ( name, options ) {
       var ss = that.get(name);
       if (ss) {
-        return ss.start();
+        if (ss.start(options) === false) {
+          console.log("Error starting " + name + " subsystem");
+        } //if
       } //if
-      return undefined;
+      return ss;
     };
 
     this.stop = function ( name ) {
       var ss = that.get(name);
       if (ss) {
-        return ss.stop();
+        ss.stop(options);
       } //if
-      return undefined;
+      return ss;
     };
 
   })();

@@ -25,7 +25,7 @@ compile = java -jar $(TOOLS_DIR)/closure/compiler.jar \
 
 concat = cat $(CONCAT_LIST) > $(1)
 
-complete = cat $(PALADIN_MIN) $(CUBICVR_LIB) > $(1)
+complete = cat $(CUBICVR_LIB) $(PALADIN_MIN) > $(1)
 
 all: $(DIST_DIR) $(PALADIN_DIST) $(PALADIN_MIN) $(PALADIN_COMPLETE)
 	@@echo "Finished, see $(DIST_DIR)"
