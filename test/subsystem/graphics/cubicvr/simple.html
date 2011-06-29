@@ -13,28 +13,57 @@
 
             function Game() {
               var paladin = this.paladin = new Paladin(),
-                  gfx = paladin.Subsystem.start("graphics"),
-                  scene = gfx.createScene( "test", 60 ),
-                  camera = gfx.createCamera();
+                  gfx = paladin.Subsystem.start("graphics");
+
+              var scene = new gfx.Scene( { fov: 60 } ),
+                  camera = new gfx.Camera( { position: [1, 1, 1], target: [0, 0, 0] } ),
+                  mesh = new gfx.Mesh({ 
+                          primitives: [{
+                            type: 'box',
+                            size: 0.5,
+                            material: {
+                              color: [1, 0, 0],
+                            },
+                          }],
+                          finalize: true,
+                        }),
+                  obj1 = new gfx.SceneObject( { mesh: mesh, name: 'test1' } ),
+                  obj2 = new gfx.SceneObject( { mesh: mesh, name: 'test2' } );
 
               scene.bindCamera(camera);
+              scene.bindSceneObject(obj1);
+              scene.bindSceneObject(obj2);
 
-              var cameraTask = Paladin.tasker.add({
+              Paladin.tasker.add({
                 callback: function( task ) {
-                  var index = Date.now() - task.time;
-                  camera.position = [Math.sin(index), 1, Math.cos(index)];
+                  obj1.rotation[1] = task.time/10;
+                  obj1.rotation[2] = 50*Math.sin(task.time/500);
                   return task.CONT;
                 },
-                name: "rotate camera"
+                name: "rotate object"
+              });
+
+              Paladin.tasker.add({
+                callback: function( task ) {
+                  var i = task.time/2000;
+                  obj2.position = [Math.sin(i), Math.cos(i*3), Math.cos(i)];
+                  return task.CONT;
+                },
+                name: "rotate object"
               });
 
               this.run = function () {
-                gfx.enableScene(scene);
+                gfx.pushScene(scene, {
+                  update: function ( timer, gl ) {
+                    //for shaders and stuff
+                  },
+                });
                 paladin.run();
               };
             };
 
             var game = new Game();
+            game.run();
 
           }, false);
 
