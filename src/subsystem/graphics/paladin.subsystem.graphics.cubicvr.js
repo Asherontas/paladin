@@ -175,7 +175,7 @@
       var mainLoopFunc = options && options.mainLoop ? options.mainLoop : function ( timer, gl ) {
       };
 
-      mainLoop = new CubicVR.MainLoop(mainLoopFunc);
+      mainLoop = new CubicVR.MainLoop(mainLoopFunc, true, true);
       
       return true;
     },
