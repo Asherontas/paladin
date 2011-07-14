@@ -41,7 +41,7 @@ function Game() {
 
 function Game() {
 
-    Paladin.init( {debug: true} );
+    Paladin.init( {debug: true, graphics:{ isolateRenderLoop: false }} );
 
     var scene = new Paladin.Scene();
     Paladin.graphics.pushScene( scene );

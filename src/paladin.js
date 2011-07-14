@@ -56,7 +56,7 @@ function Tasker() {
                 }
             }
         }
-        
+
         if( !terminate ) {
             setTimeout( that.run, 0 );
         }

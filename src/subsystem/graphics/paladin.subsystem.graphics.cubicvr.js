@@ -175,8 +175,38 @@
       var mainLoopFunc = options && options.mainLoop ? options.mainLoop : function ( timer, gl ) {
       };
 
-      mainLoop = new CubicVR.MainLoop(mainLoopFunc, true, true);
-      
+      var useTasker = !options.isolateRenderLoop;
+
+      mainLoop = new CubicVR.MainLoop(mainLoopFunc, true, useTasker);
+
+      var requestAnimFrame = (function() {
+        return  window.requestAnimationFrame       || 
+                window.webkitRequestAnimationFrame || 
+                window.mozRequestAnimationFrame    || 
+                window.oRequestAnimationFrame      || 
+                window.msRequestAnimationFrame     || 
+                function(callback, element){
+                  window.setTimeout(callback, 1000 / 60);
+                };
+      })();
+
+      var renderFlag = useTasker;
+
+      function doRender () {
+        mainLoop.runOnce();
+        renderFlag = true;
+      } //doRender
+
+      Paladin.tasker.add( {
+        callback: function ( task ) {
+          if ( renderFlag ) {
+            renderFlag = false;
+            requestAnimFrame( doRender, mainCanvas );
+          } //if
+          return task.CONTINUE;
+        }
+      } );
+
       return true;
     },
 
